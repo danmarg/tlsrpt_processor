@@ -1,0 +1,10 @@
+import unittest
+import tlsrpt_processor
+
+class TestParsesSample(unittest.TestCase):
+  def test_rfc_sample(self):
+    tlsrpt_processor.main(["-i", "testdata/sample.json", "-o", "kv"])
+
+
+if __name__ == "__main__":
+  unittest.main()
