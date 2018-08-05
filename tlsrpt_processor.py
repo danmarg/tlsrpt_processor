@@ -84,112 +84,30 @@ def main(argv):
       sys.exit(1)
   
   
-    try:
-      organization_name = data["organization-name"]
-    except KeyError:
-      organization_name = ""
-      pass
-    try: 
-      start_date_time = data["date-range"]["start-datetime"] 
-    except KeyError: 
-      start_date_time="" 
-      pass
-    try:
-      end_date_time = data["date-range"]["end-datetime"]
-    except KeyError:
-      end_date_time = ""
-      pass
-    try:
-      contact_info = data["contact-info"]
-    except KeyError:
-      contact_info = ""
-      pass
-    try:
-      email_address = data["email-address"]
-    except KeyError:
-      email_address = ""
-      pass
-    try:
-      report_id = data["report-id"]
-    except KeyError:
-      report_id = ""
-      pass
+    organization_name = data.get("organization-name", "")
+    start_date_time = data.get("date-range", {}).get("start-datetime", "")
+    end_date_time = data.get("date-range", {}).get("end-datetime", "")
+    contact_info = data.get("contact-info", "")
+    email_address = data.get("email-address", "")
+    report_id = data.get("report-id", "")
   
+    for policy_set in data.get("policies", []):
+      policy_type = policy_set.get("policy", {}).get("policy-type", "")
+      policy_string = policy_set.get("policy", {}).get("policy-string", "")
+      policy_domain = policy_set.get("policy", {}).get("policy-domain", "")
+      policy_mx_host = policy_set.get("policy", {}).get("policy-mx-host", "")
+      policy_success_count = policy_set.get("summary", {}).get("total-successful-session-count", 0)
+      policy_failure_count = policy_set.get("summary", {}).get("total-failure-session-count", 0)
   
-    for policy_set in data["policies"]:
-      try:
-        policy_type = policy_set["policy"]["policy-type"]
-      except KeyError:
-        policy_type = ""
-        pass
-      try:
-        policy_string = policy_set["policy"]["policy-string"]
-      except KeyError:
-        policy_string = ""
-        pass
-      try:
-        policy_domain = policy_set["policy"]["policy-domain"]
-      except KeyError:
-        policy_domain = ""
-        pass
-      try:
-        policy_mx_host = policy_set["policy"]["mx-host"]
-      except KeyError:
-        policy_mx_host = ""
-        pass
-      try: 
-        policy_success_count = policy_set["summary"]["total-successful-session-count"]
-      except KeyError:
-        policy_success_count = 0
-        pass
-      try:
-        policy_failure_count = policy_set["summary"]["total-failure-session-count"]
-      except KeyError:
-        policy_failure_count = 0
-        pass
-  
-  
-      for failure_details_set in policy_set["failure-details"]:
-        try:
-          result_type = failure_details_set["result-type"]
-        except KeyError:
-          result_type = ""
-          pass
-        try:
-          sending_ip = failure_details_set["sending-mta-ip"]
-        except KeyError:
-          sending_ip = ""
-          pass
-        try:
-          receiving_mx_hostname = failure_details_set["receiving-mx-hostname"]
-        except KeyError:
-          receiving_mx_hostname = ""
-          pass
-        try:
-          receiving_mx_helo = failure_details_set["receiving-mx-helo"]
-        except KeyError:
-          receiving_mx_helo = ""
-          pass
-        try:
-          receiving_ip = failure_details_set["receiving-ip"]
-        except KeyError:
-          receiving_ip = ""
-          pass
-        try:
-          failed_session_count = failure_details_set["failed-session-count"]
-        except KeyError:
-          failed_session_count = 0
-          pass
-        try:
-          additional_info = failure_details_set["additional-information"]
-        except KeyError:
-          additional_info = ""
-          pass
-        try:
-          failure_error_code = failure_details_set["failure-error-code"]
-        except KeyError:
-          failure_error_code = ""
-          pass
+      for failure_details_set in policy_set.get("failure-details", []):
+        result_type = failure_details_set.get("result-type", "")
+        sending_ip = failure_details_set.get("sending-mta-ip", "")
+        receiving_mx_hostname = failure_details_set.get("receiving-mx-hostname", "")
+        receiving_mx_helo = failure_details_set.get("receiving-mx-helo", "")
+        receiving_ip = failure_details_set.get("receiving-ip", "")
+        failed_session_count = failure_details_set.get("failed-session-count", 0)
+        additional_info = failure_details_set.get("additional-information", "")
+        failure_error_code = failure_details_set.get("failure-error-code", "")
   
         if output_style in ('kv'):
   
